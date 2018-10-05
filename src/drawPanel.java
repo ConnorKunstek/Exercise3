@@ -70,10 +70,11 @@ public class drawPanel extends JPanel{
     // draw all the lines of the poly using the Midpoint Alg
     public void draw_poly_by_bres (Graphics2D g) {
         for (int i=0; i<(poly.npoints-1); i++) {
-            x_cord1 = poly.xpoints[i];
-            x_cord2 = poly.xpoints[i+1];
-            y_cord1 = poly.ypoints[i];
-            y_cord2 = poly.ypoints[i+1];
+            x_cord1 = poly.xpoints[0];
+            x_cord2 = poly.xpoints[1];
+            y_cord1 = poly.ypoints[2];
+            y_cord2 = poly.ypoints[3];
+            y_cord2 = poly.ypoints[4];
             draw_line_by_bres(g);
         }
         x_cord1 = poly.xpoints[0];

@@ -1,50 +1,32 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.Polygon;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
-public class Star extends JFrame implements ActionListener {
+public class Star extends JFrame {
 
-    private Polygon star;
-
-    private JButton reset;
-
+    private int x[] = {400,500,200,600,300};
+    private int y[] = {100,600,200,200,600};
+    private Polygon poly  = new Polygon(x,y,5);
+    private Container c;
     private JButton stop;
-
-    private JPanel buttonView, view;
-
-    private JFrame frame;
-
+    private JButton reset;
     private drawPanel panel;
+    private JPanel buttons;
 
+    //boolean to tell if the polygon is being dragged
+    private boolean isDragging = false;
 
-    public Star(){
+    public Star() {
 
-        super("Exercise 3");
-
-        int[] xpoints = new int[5];
-        xpoints[0] = 400;
-        xpoints[1] = 200;
-        xpoints[2] = 600;
-        xpoints[3] = 300;
-        xpoints[4] = 500;
-
-        int[] ypoints = new int[5];
-        ypoints[0] = 100;
-        ypoints[1] = 300;
-        ypoints[2] = 300;
-        ypoints[3] = 600;
-        ypoints[4] = 600;
-
-        frame = new JFrame("Star");
-
-        star = new Polygon(xpoints, ypoints, 5);
-
-        panel = new drawPanel(star);
+        //////////////////////////
 
         reset = new JButton("Reset");
+        stop = new JButton("Stop");
 
         reset.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
@@ -52,32 +34,59 @@ public class Star extends JFrame implements ActionListener {
             }
         });
 
-        stop = new JButton("Stop");
-
         stop.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 stop();
             }
         });
 
-        buttonView = new JPanel();
-        view = new JPanel();
+        //////////////////////////
 
-        buttonView.setLayout(new GridLayout(1,2, 2, 0));
-        buttonView.add(stop);
-        buttonView.add(reset);
+        c = getContentPane();
+        //create a new drawPanel with the banding boolean set
+        panel = new drawPanel(poly);
 
-        view.setLayout(new GridLayout(1,1,0,0));
-        //view.add(star);
+        //create a mouse listener to tell when the mouse is clicked and released
+        panel.addMouseListener(new MouseListener(){
+            public void mouseExited(MouseEvent e){}
+            public void mouseEntered(MouseEvent e){}
+            public void mouseReleased(MouseEvent e){
+                isDragging = false;
+            }
+            public void mousePressed(MouseEvent e){
+                if(panel.clickInPoly2(e.getPoint())){
+                    isDragging = true;
+                }
+            }
+            public void mouseClicked(MouseEvent e){}
+        });
 
-        Container c = getContentPane();
+        //create a motion listener to track the mouse dragging the polygon
+        panel.addMouseMotionListener(new MouseMotionListener(){
+            public void mouseDragged(MouseEvent e) {
+                if(isDragging){
+                    int x2[] = {150,250,e.getX(),150};
+                    int y2[] = {150,150,e.getY(),200};
+                    panel.setRightX(e.getX());
+                    panel.setRightY(e.getY());
+                    panel.setPoly(new Polygon(x2,y2,4));
+                    panel.repaint();
+                }
+            }
+            public void mouseMoved(MouseEvent e) {}
+        });
 
-        c.add(buttonView, BorderLayout.NORTH);
-        c.add(view, BorderLayout.SOUTH);
+        /////////////////////
+        buttons = new JPanel();
+        buttons.setLayout(new GridLayout(1, 2, 2, 2));
+        buttons.add(stop);
+        buttons.add(reset);
+        /////////////////////
 
+        c.add(buttons, BorderLayout.NORTH);
+        c.add(panel, BorderLayout.CENTER);
         setSize(800, 800);
         setVisible(true);
-
     }
 
     public void reset(){
@@ -88,19 +97,15 @@ public class Star extends JFrame implements ActionListener {
 
     }
 
-
-    public void actionPerformed(ActionEvent e)
-    {
-
-    }
-
-    public static void main(String[] args){
-        Star S = new Star();
-        S.addWindowListener(new WindowAdapter(){
-            public void windowClosing(WindowEvent e){
-                System.exit(0);
-            }
-        });
+    public static void main(String[] args) {
+        Star poly = new Star();
+        poly.addWindowListener(
+                new WindowAdapter(){
+                    public void windowClosing(WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
     }
 
 }
+
