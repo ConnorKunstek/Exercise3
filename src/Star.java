@@ -15,6 +15,10 @@ public class Star extends JFrame implements ActionListener {
 
     private JPanel buttonView, view;
 
+    private JFrame frame;
+
+    private drawPanel panel;
+
 
     public Star(){
 
@@ -25,11 +29,20 @@ public class Star extends JFrame implements ActionListener {
         xpoints[1] = 200;
         xpoints[2] = 600;
         xpoints[3] = 300;
-        xpoints[5] = 500;
+        xpoints[4] = 500;
 
         int[] ypoints = new int[5];
+        ypoints[0] = 100;
+        ypoints[1] = 300;
+        ypoints[2] = 300;
+        ypoints[3] = 600;
+        ypoints[4] = 600;
 
-        star = new Polygon();
+        frame = new JFrame("Star");
+
+        star = new Polygon(xpoints, ypoints, 5);
+
+        panel = new drawPanel(star);
 
         reset = new JButton("Reset");
 
@@ -55,7 +68,7 @@ public class Star extends JFrame implements ActionListener {
         buttonView.add(reset);
 
         view.setLayout(new GridLayout(1,1,0,0));
-        view.add(star);
+        //view.add(star);
 
         Container c = getContentPane();
 
